@@ -18,44 +18,24 @@ pipeline {
             steps { bat 'java -cp target\\hello-world-1.0-SNAPSHOT.jar hello_world' }
         }
     }
-    post
-    {
-        success
-         {
+    post {
+        success {
             archiveArtifacts artifacts: 'target/*.jar'
-            emailext
-            (
-                to: 'nikhil.kesarwani.tech@gmail.com',
-                subject: "✅ BUILD SUCCESS - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """
-                    <h2>Build Successful!</h2>
-                    <p>Job: ${env.JOB_NAME}</p>
-                    <p>Build Number: ${env.BUILD_NUMBER}</p>
-                    <p>Status: SUCCESS</p>
-                    <p>Check details: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                """,
+            emailext(to: 'nikhil.kesarwani.tech@gmail.com',
+                subject: "BUILD SUCCESS - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Build Successful! Job: ${env.JOB_NAME} Build: ${env.BUILD_NUMBER} URL: ${env.BUILD_URL}",
                 mimeType: 'text/html'
             )
         }
-        failure
-         {
-            emailext
-            (
-                to: 'nikhil.kesarwani.tech@gmail.com',
-                subject: "❌ BUILD FAILED - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """
-                    <h2>Build Failed!</h2>
-                    <p>Job: ${env.JOB_NAME}</p>
-                    <p>Build Number: ${env.BUILD_NUMBER}</p>
-                    <p>Status: FAILURE</p>
-                    <p>Check details: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                """,
+        failure {
+            emailext(to: 'nikhil.kesarwani.tech@gmail.com',
+                subject: "BUILD FAILED - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Build Failed! Job: ${env.JOB_NAME} Build: ${env.BUILD_NUMBER} URL: ${env.BUILD_URL}",
                 mimeType: 'text/html'
             )
         }
-        always 
-        {
+        always {
             echo 'Pipeline finished!'
         }
     }
- }
+}
